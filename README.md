@@ -6,6 +6,7 @@
 * `port`: *Optional* Server SSH port, default is port 22
 * `base_dir`: *Required* Base directory in which to place the artifacts
 * `user`: *Required* User credential for login using ssh
+* `ssh_opts`: *Optional* Extra options to pass to the ssh command
 * `private_key`: *Required* Key for the specified user
 * `disable_version_path`: default is `false`. Then `false` `out` will put content in a directory named by the version name. This directory is omitted when this option is enabled. Note that `check` and `in` origins will treat all the files in the `base_dir` as versions in this case.
 
