@@ -23,6 +23,7 @@ SERVERS=$(jq -r '.source.servers + [.source.server]|join(" ")'< $SCRIPT_INPUT)
 PORT=$(jq -r '.source.port // ""' < $SCRIPT_INPUT)
 BASE_DIR=$(jq -r '.source.base_dir // ""' < $SCRIPT_INPUT)
 USER=$(jq -r '.source.user // ""' < $SCRIPT_INPUT)
+SSHOPTS=$(jq -r '.source.ssh_opts // ""' < $SCRIPT_INPUT)
 SYNC_DIR=$(jq -r '.params.sync_dir // ""' < $SCRIPT_INPUT)
 RSYNC_OPTS_ARR=$(jq -r '.params.rsync_opts // ""' < $SCRIPT_INPUT)
 jq -re '.source.disable_version_path' < $SCRIPT_INPUT >/dev/null
@@ -82,12 +83,12 @@ if [ $? -eq 0 ]; then
   REPORTED_VERSION=0
   for SERVER in $SERVERS
   do
-      CMD="ssh -i ~/.ssh/server_key -p $PORT $USER@$SERVER mkdir -p $DEST_DIR"
+      CMD="ssh -i ~/.ssh/server_key -p $PORT $SSHOPTS $USER@$SERVER mkdir -p $DEST_DIR"
       echo $CMD 1>&2
       eval $CMD 1>&2
       
       if [ $? -eq 0 ]; then
-        RSYNC_CMD="rsync $RSYNC_OPTS -e 'ssh -i ~/.ssh/server_key -p $PORT'  $SRC_DIR/$SYNC_DIR/ $USER@$SERVER:$DEST_DIR"
+        RSYNC_CMD="rsync $RSYNC_OPTS -e 'ssh -i ~/.ssh/server_key -p $PORT $SSHOPTS'  $SRC_DIR/$SYNC_DIR/ $USER@$SERVER:$DEST_DIR"
         echo $RSYNC_CMD 1>&2
 
         eval $RSYNC_CMD  1>&2
